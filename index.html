@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fretex Jobb — Opplæring 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700&family=Source+Serif+4:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --fretex-red:#D4213D;--fretex-red-dark:#B01A32;--fretex-red-pale:#FEF0F2;--fretex-red-light:#FCDDE2;
+  --fretex-black:#1D1D1B;
+  --bg:#FFF;--bg-page:#F7F7F6;--bg-warm:#FAF9F7;
+  --text:#1D1D1B;--text-sec:#5A5A58;--text-muted:#999;
+  --border:#E5E5E3;--border-light:#F0EFED;
+  --success:#2E7D32;--success-light:#EDF7EE;--warn:#F9A825;--warn-light:#FFFDE7;
+  --danger:#C62828;--danger-light:#FDEDED;
+  --r:10px;--r-sm:7px;--shadow:0 1px 3px rgba(0,0,0,.05);--shadow-md:0 4px 14px rgba(0,0,0,.07);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Source Sans 3',sans-serif;background:var(--bg-page);color:var(--text);font-size:15px;}
+
+.header{background:var(--bg);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
+.header-accent{height:3px;background:var(--fretex-red);}
+.header-bar{display:flex;justify-content:space-between;align-items:center;padding:18px 28px;max-width:1280px;margin:0 auto;}
+.header-logo{height:52px;}
+.header-right{display:flex;align-items:center;gap:12px;}
+.header-sub{font-size:14px;color:var(--text-sec);font-weight:500;}
+
+.admin-btn{display:flex;align-items:center;gap:8px;padding:7px 16px;border-radius:50px;border:1px solid var(--border);background:var(--bg);font-family:inherit;font-size:13px;color:var(--text-sec);cursor:pointer;transition:all .15s;}
+.admin-btn:hover{border-color:var(--fretex-red);color:var(--fretex-red);}
+.admin-btn.active{background:var(--fretex-red);color:white;border-color:var(--fretex-red);}
+.admin-btn .dot{width:8px;height:8px;border-radius:50%;background:var(--border);transition:background .15s;}
+.admin-btn.active .dot{background:white;}
+
+.nav{background:var(--bg);border-bottom:1px solid var(--border);}
+.nav-inner{display:flex;gap:0;max-width:1280px;margin:0 auto;padding:0 28px;}
+.nav-tab{padding:12px 22px;border:none;background:none;font-family:inherit;font-size:14px;font-weight:500;color:var(--text-muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;}
+.nav-tab:hover{color:var(--text);}
+.nav-tab.active{color:var(--fretex-red);border-bottom-color:var(--fretex-red);font-weight:600;}
+
+.main{max-width:1280px;margin:0 auto;padding:24px 28px;}
+
+.filters{display:flex;gap:12px;flex-wrap:nowrap;margin-bottom:22px;align-items:flex-end;}
+.fg-search{flex:2;}
+.fg{display:flex;flex-direction:column;gap:3px;}
+.fg-label{font-size:12px;font-weight:600;color:var(--text-sec);text-transform:uppercase;letter-spacing:.4px;}
+select.fi,input.fi{padding:10px 14px;border:1px solid var(--border);border-radius:var(--r-sm);font-family:inherit;font-size:14px;background:white;color:var(--text);min-width:150px;height:42px;box-sizing:border-box;}
+select.fi:focus,input.fi:focus{outline:none;border-color:var(--fretex-red);box-shadow:0 0 0 3px rgba(212,33,61,.08);}
+
+.stats{display:flex;gap:14px;margin-bottom:22px;flex-wrap:wrap;}
+.stat{background:white;border:1px solid var(--border-light);border-radius:var(--r-sm);padding:12px 18px;display:flex;align-items:center;gap:12px;flex:1;min-width:140px;box-shadow:var(--shadow);}
+.stat-ic{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;}
+.stat-v{font-size:22px;font-weight:700;}.stat-l{font-size:11px;color:var(--text-muted);margin-top:1px;}
+
+.cards{display:grid;gap:8px;}
+.card{background:white;border-radius:var(--r);border:1px solid var(--border-light);box-shadow:var(--shadow);overflow:hidden;transition:all .15s;}
+.card:hover{box-shadow:var(--shadow-md);transform:translateY(-1px);}
+.card-inner{display:grid;grid-template-columns:95px 1fr auto;align-items:stretch;}
+.card-date{color:white;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 8px;}
+.cd-day{font-size:30px;font-weight:800;line-height:1;}.cd-mon{font-size:13px;font-weight:700;opacity:.95;margin-top:1px;}.cd-wk{font-size:11px;font-weight:700;opacity:.8;margin-top:1px;text-transform:uppercase;}
+.card-info{padding:10px 22px;display:flex;flex-direction:column;gap:4px;}
+.ci-tag{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;}
+.ci-name{font-family:'Source Serif 4',serif;font-size:20px;font-weight:700;line-height:1.3;}
+.ci-name-row{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;}.ci-meta{display:flex;gap:16px;flex-wrap:wrap;font-size:14px;color:var(--text);align-items:center;font-weight:500;}
+.ci-meta span{display:flex;align-items:center;gap:3px;}
+.card-act{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 22px;gap:8px;border-left:1px solid var(--border-light);width:190px;min-width:190px;max-width:190px;}
+.spots-txt{font-size:12px;color:var(--text-sec);text-align:center;}
+.spots-bar{width:100%;height:4px;background:var(--border-light);border-radius:2px;overflow:hidden;}
+.spots-fill{height:100%;border-radius:2px;transition:width .3s;background:var(--success);}.spots-fill.w{background:var(--warn);}.spots-fill.f{background:var(--danger);}
+.card.past{opacity:.45;}.card.past .card-date{filter:grayscale(.5);}
+
+.btn{padding:7px 18px;border-radius:var(--r-sm);border:none;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:5px;}
+.btn-p{background:var(--fretex-red);color:white;}.btn-p:hover{background:var(--fretex-red-dark);}
+.btn-o{background:none;border:1.5px solid var(--fretex-red);color:var(--fretex-red);}.btn-o:hover{background:var(--fretex-red-pale);}
+.btn-d{background:none;border:1.5px solid var(--danger);color:var(--danger);font-size:12px;padding:4px 10px;}.btn-d:hover{background:var(--danger-light);}
+.btn-x{background:var(--fretex-black);color:white;}.btn-x:hover{background:#333;}
+.btn-s{padding:8px 16px;font-size:14px;}
+.btn-g{background:var(--success);color:white;}.btn-g:hover{background:#256B29;}
+.btn-muted{background:none;border:1px solid var(--border);color:var(--text-muted);font-size:11px;padding:4px 10px;cursor:pointer;border-radius:var(--r-sm);}
+.btn-muted:hover{border-color:var(--fretex-red);color:var(--fretex-red);}
+
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:center;justify-content:center;padding:20px;}
+.modal-bg.vis{display:flex;}
+.modal{background:white;border-radius:var(--r);max-width:560px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2);}
+.modal-lg{max-width:750px;}
+.m-head{padding:18px 24px;border-bottom:1px solid var(--border-light);display:flex;justify-content:space-between;align-items:center;}
+.m-head h2{font-family:'Source Serif 4',serif;font-size:19px;font-weight:700;}
+.m-close{width:30px;height:30px;border-radius:50%;border:none;background:var(--bg-page);cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;color:var(--text-sec);}
+.m-close:hover{background:var(--border);}
+.m-body{padding:22px 24px;}.m-foot{padding:14px 24px;border-top:1px solid var(--border-light);display:flex;justify-content:flex-end;gap:10px;}
+.fg-form{margin-bottom:14px;}
+.fg-form label{display:block;font-size:13px;font-weight:600;color:var(--text-sec);margin-bottom:5px;}
+.fg-form input,.fg-form select{width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:var(--r-sm);font-family:inherit;font-size:14px;}
+.fg-form input:focus,.fg-form select:focus{outline:none;border-color:var(--fretex-red);}
+.f-err{color:var(--danger);font-size:12px;margin-top:3px;display:none;}
+.fg-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+
+.chip-area{display:flex;flex-wrap:wrap;gap:6px;padding:8px;border:1px solid var(--border);border-radius:var(--r-sm);min-height:42px;background:white;cursor:pointer;}
+.chip-area:focus-within{border-color:var(--fretex-red);box-shadow:0 0 0 3px rgba(212,33,61,.08);}
+.chip{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:50px;font-size:12px;font-weight:600;background:var(--fretex-red-pale);color:var(--fretex-red);}
+.chip .chip-x{cursor:pointer;font-size:14px;line-height:1;opacity:.7;}.chip .chip-x:hover{opacity:1;}
+.chip-dd{position:relative;}
+.chip-menu{position:absolute;top:100%;left:0;right:0;background:white;border:1px solid var(--border);border-radius:var(--r-sm);box-shadow:var(--shadow-md);max-height:220px;overflow-y:auto;z-index:10;display:none;}
+.chip-menu.open{display:block;}
+.chip-opt{padding:8px 12px;font-size:13px;cursor:pointer;transition:background .1s;}
+.chip-opt:hover{background:var(--bg-page);}
+.chip-opt.selected{background:var(--fretex-red-pale);color:var(--fretex-red);font-weight:600;}
+.chip-add-row{display:flex;gap:6px;padding:6px 8px;border-top:1px solid var(--border-light);}
+.chip-add-input{flex:1;padding:5px 8px;border:1px solid var(--border);border-radius:4px;font-size:12px;font-family:inherit;}
+.chip-add-btn{padding:5px 10px;border:none;background:var(--fretex-red);color:white;border-radius:4px;font-size:11px;font-weight:600;cursor:pointer;}
+
+.admin-card{background:white;border-radius:var(--r);border:1px solid var(--border-light);box-shadow:var(--shadow);margin-bottom:18px;overflow:hidden;}
+.admin-card-head{padding:14px 18px;background:var(--bg-warm);border-bottom:1px solid var(--border-light);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;}
+.admin-card-head h3{font-size:15px;font-weight:600;}
+table.tbl{width:100%;border-collapse:collapse;}
+table.tbl th{padding:9px 14px;text-align:left;font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--border-light);background:var(--bg-warm);}
+table.tbl td{padding:9px 14px;font-size:13px;border-bottom:1px solid var(--border-light);}
+table.tbl tr:hover td{background:var(--bg-page);}
+.badge{display:inline-flex;padding:2px 9px;border-radius:50px;font-size:11px;font-weight:600;}
+.badge-g{background:var(--success-light);color:var(--success);}.badge-o{background:var(--warn-light);color:#E65100;}.badge-r{background:var(--danger-light);color:var(--danger);}
+.cap-input{width:55px;padding:3px 6px;border:1px solid var(--border);border-radius:5px;text-align:center;font-size:13px;font-weight:600;}
+
+.el-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;}
+.el-card{background:white;border-radius:var(--r);border:1px solid var(--border-light);padding:18px;box-shadow:var(--shadow);transition:all .15s;}
+.el-card:hover{box-shadow:var(--shadow-md);transform:translateY(-2px);}
+.el-card h4{font-size:15px;font-weight:600;margin-bottom:6px;}
+.el-meta{font-size:12px;color:var(--text-sec);margin-bottom:3px;}
+.el-badge{display:inline-block;margin-top:8px;padding:3px 10px;border-radius:50px;font-size:11px;font-weight:600;background:var(--success-light);color:var(--success);}
+
+.tiltak-tags{display:flex;flex-wrap:wrap;gap:3px;}
+.tiltak-tag{padding:1px 7px;border-radius:50px;font-size:10px;font-weight:600;background:var(--bg-page);color:var(--text-sec);border:1px solid var(--border);}
+
+/* Color swatch in admin */
+.color-swatch{display:inline-block;width:22px;height:22px;border-radius:5px;border:2px solid rgba(0,0,0,.1);cursor:pointer;vertical-align:middle;}
+.color-swatch-input{position:absolute;opacity:0;width:0;height:0;}
+.prog-color-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border-light);}
+.prog-color-row:last-child{border-bottom:none;}
+
+.toast{position:fixed;bottom:24px;right:24px;background:var(--fretex-black);color:white;padding:12px 22px;border-radius:var(--r-sm);box-shadow:var(--shadow-md);font-size:14px;font-weight:500;z-index:2000;transform:translateY(80px);opacity:0;transition:all .25s;}
+.toast.vis{transform:translateY(0);opacity:1;}.toast.err{background:var(--danger);}
+.hidden{display:none !important;}
+
+@media(max-width:768px){
+  .header-bar{padding:14px 16px;}.header-logo{height:40px;}.main{padding:16px;}
+  .card-inner{grid-template-columns:70px 1fr;}
+  .card-act{grid-column:1/-1;flex-direction:row;justify-content:space-between;border-left:none;border-top:1px solid var(--border-light);}
+  .filters{flex-direction:column;}select.fi,input.fi{min-width:100%;}.filters{flex-wrap:wrap!important;}
+  .nav-inner{overflow-x:auto;padding:0 16px;}.fg-row{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-accent"></div>
+  <div class="header-bar">
+    <img src="data:image/png;base64,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E4ZC5Pf72bJlC7m5uZSVlWGxqKSnp9OhQwdatco2+z8ep0dDYBt97N69m+3bt1FQUIiu6yQlJdGmTRs6duxoPlNfmhziymqlQNufj5QQF8xS2CCbuYQIBBCBciztTyL+2TH41mykcvLLCE0jsOdg8ClLBGUjnsDSqS2pyz6geMgIHHM/DIZEShIB3z5src9GbZdN5aRXsJ3TA/e3S3FMfz940x8VrbAEOSEWrbi8WlX53zoiG8f40tJSfvjhB3Rdx+12UVlZRUlJCfn5eezfv58DBw5QWFiI3++nsrKS3r37hDGfoiisW7eOl156kVWrVlFSUoLP5zMBJTo6mtNOO4277x5B//7968V8BmNIksTWrVv58ssvWbJkMbt376aqqgq3223eeLVardjtdpKTk+nevTuXXz6Qyy67DJvNFnYxKnTeHo+HiooKtm/fzuLFPzFv3jxyc3OJi4tDkqQwINd1nYiICDZs2MDjjz9eLWCkWgA0eMno7LPP4oorrjziPEMZ//fff+err75k+fLl7N27F6fTidvtNp+x223YbHbS09M588wzGTJkCAMGXIQsyzU2UGiipxkzZlT/TaDrovpvR9JxZGRZwuPx0q5dO2699dawY7XL5eKll17E6XSFfNfwswRzpgRpLeN2uzj11G5cd911/3P5fgwlwQDMb775hnnz5rF27Rr27NmDw+EMez4yMoLs7Gx69OjBoEGDufzyy1FVtVbeOlbhoqoqDoeDmTPf4sMPP2Tz5s243R7zGbvdRosWLejevTvXXfcfrrzyylr54FgFiqEIzJ07lzfffINVq1ZRVlYeItRlUlJS6NixIwMHDuTGG28iISGhXmsdYmYJMldg136U9GT0vCJqVctl6dBFIkkK5kSRJPD7UNLiiXnwAewX98bz4694fvwFFBv4/NV2d4GkWtHLHRSe/29Svn2HpM+m4UlZjvB6wWoh5uY7SJjyKOUPPU3po9OQiSHq39eitmuNf+s2JMmCnl+MHBeDqKwyuP0fY9zamM74fW5uLsOG3YDNZjU3vRGXrqoqFosFu91u5os5fNFff/01JkyYQFVVMP98VFQU8fHxeL1e8+LTsmXLWLx4MQ899DCPPvpovYBuz549PPPM08ybN4+KinIiIiKrb6t6SU5OJjo6GrfbTWlpKYFAgOLiYubOnctXX31Fly5deOihhxky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" alt="Fretex:Jobb" class="header-logo">
+    <div class="header-right">
+      <span class="header-sub">Opplæring 2026</span>
+      <button class="admin-btn" id="adminBtn" onclick="toggleAdmin()"><div class="dot"></div><span>Admin</span></button>
+    </div>
+  </div>
+</header>
+
+<nav class="nav" id="navBar">
+  <div class="nav-inner">
+    
+    <button class="nav-tab hidden" id="adminTab" onclick="switchTab('admin')">⚙️ Administrasjon</button>
+  </div>
+</nav>
+
+<main class="main">
+  <div style="background:white;border:1px solid var(--border-light);border-radius:var(--r);padding:20px 28px;margin-bottom:22px;box-shadow:var(--shadow);line-height:1.7;font-size:15px;color:var(--text);">
+    <p style="margin-bottom:8px;">Her finner du en oversikt over kurs som er <strong>obligatoriske</strong> for jobbkonsulenter i Fretex Jobb.</p>
+    <p style="margin-bottom:8px;">Kursene du finner her er en kombinasjon av e-læring, quizer, simuleringer og praktiske oppgaver. Enkelte av modulene har også <strong>Teams-samlinger</strong> som en del av opplæringen. Disse samlingene må du <strong>melde deg på inne i kurset</strong>, etter at du har gjennomført e-læringen og oppgave.</p>
+    <p style="margin-bottom:8px;">For å få fullført på et kurs, må du <strong>gjennomføre alle elementer</strong> i kurset. Forventet tidsbruk er oppgitt i innledningen til kurset.</p>
+    <p>Du kan ta kurs i den rekkefølgen du selv ønsker og melde deg opp på de samlingene du har tilgang til, men husk at <strong>all opplæring skal være avtalt med din nærmeste leder</strong>.</p>
+  </div>
+  <section id="tab-courses">
+    <!-- Filters always visible -->
+    <div class="filters" id="filtersBar"></div>
+    <!-- Stats admin only -->
+    <div class="stats hidden" id="statsBar"></div>
+    <div class="cards-header" style="display:grid;grid-template-columns:95px 1fr 190px;padding:8px 0;border-bottom:2px solid var(--border);margin-bottom:8px;font-size:12px;font-weight:700;color:var(--text-sec);text-transform:uppercase;letter-spacing:.4px;">
+      <div style="padding-left:8px;">Dato for samling</div>
+      <div style="padding-left:22px;">Kursinformasjon</div>
+      <div style="text-align:center;">Lenke</div>
+    </div>
+    <div class="cards" id="coursesGrid"></div>
+  </section>
+  <section id="tab-elearning" class="hidden">
+    <h2 style="font-family:'Source Serif 4',serif;margin-bottom:8px;font-size:21px;">Kontinuerlig tilgjengelig e-læring</h2>
+    <p style="color:var(--text-sec);margin-bottom:22px;font-size:13px;">Disse kursene er alltid tilgjengelige i Moodle. Ingen påmelding nødvendig.</p>
+    <div class="el-grid" id="elGrid"></div>
+  </section>
+  <section id="tab-admin" class="hidden">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px;">
+      <h2 style="font-family:'Source Serif 4',serif;font-size:21px;">Administrasjon</h2>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn btn-g btn-s" onclick="openAddCourse()">＋ Nytt kurs</button>
+        <button class="btn btn-x btn-s" onclick="exportAll()">📥 Eksporter alle</button>
+      </div>
+    </div>
+    <div class="admin-card"><div class="admin-card-head"><h3>Kommende kurs</h3></div>
+      <div style="overflow-x:auto;"><table class="tbl" id="adminTbl"><thead><tr><th>Dato</th><th>Kurs</th><th>Tiltak</th><th>Komp.lev.</th><th>Lenke</th><th>Maks</th><th>Handlinger</th></tr></thead><tbody></tbody></table></div>
+    </div>
+    <div class="admin-card"><div class="admin-card-head"><h3>REMOVED</h3></div>
+      <div style="overflow-x:auto;"><table class="tbl" id="regTbl"><thead><tr><th>Kurs</th><th>Dato</th><th>Fornavn</th><th>Etternavn</th><th>E-post</th><th>Påmeldt av</th><th>Registrert</th><th></th></tr></thead><tbody></tbody></table></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;">
+      <div class="admin-card"><div class="admin-card-head"><h3>Tiltak</h3></div><div style="padding:16px;" id="manageTiltak"></div></div>
+      <div class="admin-card"><div class="admin-card-head"><h3>Kompetanseleverandører</h3></div><div style="padding:16px;" id="manageInstr"></div></div>
+    </div>
+    <div class="admin-card"><div class="admin-card-head"><h3>Programfarger</h3></div><div style="padding:16px;" id="manageColors"></div></div>
+  </section>
+</main>
+
+<!-- Registration Modal -->
+<div class="modal-bg" id="regModal"><div class="modal">
+  <div class="m-head"><h2 id="regTitle">Påmelding</h2><button class="m-close" onclick="closeM('regModal')">&times;</button></div>
+  <div class="m-body">
+    <p id="regInfo" style="font-size:13px;color:var(--text-sec);margin-bottom:18px;"></p>
+    <div class="fg-form"><label>Fornavn *</label><input id="rFN" placeholder="Skriv fornavn"><div class="f-err" id="eFN">Fornavn er påkrevd</div></div>
+    <div class="fg-form"><label>Etternavn *</label><input id="rLN" placeholder="Skriv etternavn"><div class="f-err" id="eLN">Etternavn er påkrevd</div></div>
+    <div class="fg-form"><label>E-postadresse *</label><input id="rEM" type="email" placeholder="fornavn.etternavn@fretex.no"><div class="f-err" id="eEM">Gyldig e-post er påkrevd</div></div>
+    <div class="fg-form"><label>Påmeldt av (leder)</label><input id="rLD" placeholder="Lederens navn (valgfritt)"></div>
+  </div>
+  <div class="m-foot"><button class="btn btn-o" onclick="closeM('regModal')">Avbryt</button><button class="btn btn-p" onclick="submitReg()">✓ Meld på</button></div>
+</div></div>
+
+<!-- View Registrations Modal -->
+<div class="modal-bg" id="viewModal"><div class="modal modal-lg">
+  <div class="m-head"><h2 id="viewTitle">Påmeldte</h2><button class="m-close" onclick="closeM('viewModal')">&times;</button></div>
+  <div class="m-body" id="viewBody"></div>
+  <div class="m-foot"><button class="btn btn-o" onclick="closeM('viewModal')">Lukk</button><button class="btn btn-x" id="viewExBtn">📥 Eksporter</button></div>
+</div></div>
+
+<!-- Add/Edit Course Modal -->
+<div class="modal-bg" id="courseModal"><div class="modal" style="max-width:600px;">
+  <div class="m-head"><h2 id="courseModalTitle">Nytt kurs</h2><button class="m-close" onclick="closeM('courseModal')">&times;</button></div>
+  <div class="m-body">
+    <div class="fg-row">
+      <div class="fg-form"><label>Dato *</label><input id="cDate" type="date"><div class="f-err" id="ecDate">Påkrevd</div></div>
+      <div class="fg-form"><label>Tidspunkt *</label><input id="cTime" value="09:00 - 11:30"><div class="f-err" id="ecTime">Påkrevd</div></div>
+    </div>
+    <div class="fg-form"><label>Kursnavn *</label><input id="cName" placeholder="F.eks. Praktisk Kartlegging"><div class="f-err" id="ecName">Påkrevd</div></div>
+    <div class="fg-row">
+      <div class="fg-form"><label>Program *</label><select id="cProg"></select></div>
+      <div class="fg-form"><label>Målgruppe</label>
+        <select id="cTarget"><option value="Jobbkonsulenter">Jobbkonsulenter</option><option value="Metodeveiledere">Metodeveiledere</option></select>
+      </div>
+    </div>
+    <div class="fg-form"><label>Tiltak (velg en eller flere) *</label><div id="cTiltakChips"></div><div class="f-err" id="ecTilt">Velg minst ett tiltak</div></div>
+    <div class="fg-form"><label>Kompetanseleverandør(er)</label><div id="cInstrChips"></div></div>
+    <div class="fg-form"><label>Maks deltakere</label><input id="cCap" type="number" value="20" min="1" max="100"></div>
+    <div class="fg-form"><label>Beskrivelse</label><textarea id="cDesc" rows="3" placeholder="Kort beskrivelse av kurset..." style="width:100%;padding:8px;border:1px solid var(--border);border-radius:var(--r-sm);font-family:inherit;font-size:13px;resize:vertical;"></textarea></div>
+    <div class="fg-form"><label>Moodle-lenke (aiLæring)</label><input id="cMoodle" type="url" placeholder="https://ailaring.no/course/view.php?id=..."></div>
+  </div>
+  <div class="m-foot">
+    <button class="btn btn-d" id="cDelBtn" onclick="deleteCourse()" style="margin-right:auto;display:none;">🗑 Slett</button>
+    <button class="btn btn-o" onclick="closeM('courseModal')">Avbryt</button>
+    <button class="btn btn-p" onclick="saveCourse()">💾 Lagre</button>
+  </div>
+</div></div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const MO=['jan','feb','mar','apr','mai','jun','jul','aug','sep','okt','nov','des'];
+function fmtD(ds){const d=new Date(ds);return{day:d.getDate(),mon:MO[d.getMonth()]};}
+function isPast(ds){const t=new Date();t.setHours(0,0,0,0);return new Date(ds)<t;}
+function getWeek(ds){const d=new Date(ds);d.setHours(0,0,0,0);d.setDate(d.getDate()+3-(d.getDay()+6)%7);const w1=new Date(d.getFullYear(),0,4);return 1+Math.round(((d-w1)/864e5-3+(w1.getDay()+6)%7)/7);}
+function toast(m,e){const t=document.getElementById('toast');t.textContent=m;t.className='toast vis'+(e?' err':'');setTimeout(()=>t.className='toast',3e3);}
+function closeM(id){document.getElementById(id).classList.remove('vis');}
+function esc(s){return String(s).replace(/'/g,"\\'");}
+
+// ============================================================
+// DEFAULT DATA
+// ============================================================
+const defaultPrograms = {
+  'Treningsstudio for jobbkonsulenter': '#3B82F6',
+  'Treningsstudio for metodeveiledere': '#D4213D',
+  'Innføringsprogram': '#059669',
+  'Spesial': '#7C3AED'
+};
+
+const defaultTiltak = ['Oppfølging','Avklaring','VTA','AFT','IPS','Oppfølging ASD'];
+const defaultInstructors = ['Thomas Knutzen','Linda Skadal Kvåle','Nina Rossen','Martin Guttormsen','Martha Cemanes Nilsen','Nathan Bunting'];
+
+function migrateCourses(courses) {
+  const map = {
+    'Alle': ['Oppfølging','Avklaring','VTA','AFT','IPS'],
+    'Oppfølging/AFT/VTA/IPS': ['Oppfølging','AFT','VTA','IPS']
+  };
+  return courses.map(c => {
+    if (typeof c.tiltak === 'string') c.tiltak = map[c.tiltak] || [c.tiltak];
+    if (typeof c.instructor === 'string') c.instructor = c.instructor ? c.instructor.split(' & ').map(s=>s.trim()) : [];
+    return c;
+  });
+}
+
+const rawDefaults = [
+  {id:1,date:'2026-04-17',time:'09:00 - 11:30',program:'Treningsstudio for jobbkonsulenter',tiltak:'Alle',kurs:'Ad Opus Web',target:'Jobbkonsulenter',instructor:'Nina Rossen & Martin Guttormsen',cap:20,moodleUrl:'https://ailaring.no/course/view.php?id=4096'},
+  {id:3,date:'2026-04-28',time:'09:00 - 11:30',program:'Treningsstudio for metodeveiledere',tiltak:'Alle',kurs:'Metodeveilederrollen 1',target:'Metodeveiledere',instructor:'Thomas Knutzen',cap:20,moodleUrl:'https://ailaring.no/course/view.php?id=4084'},
+  {id:6,date:'2026-04-30',time:'09:00 - 11:30',program:'Treningsstudio for jobbkonsulenter',tiltak:'Oppfølging/AFT/VTA/IPS',kurs:'Praktisk Kartlegging',target:'Jobbkonsulenter',instructor:'Martha Cemanes Nilsen',cap:20},
+  {id:7,date:'2026-05-05',time:'09:00 - 11:30',program:'Treningsstudio for jobbkonsulenter',tiltak:'Avklaring',kurs:'Praktisk Kartlegging',target:'Jobbkonsulenter',instructor:'Martha Cemanes Nilsen',cap:20},
+  {id:8,date:'2026-05-06',time:'09:00 - 11:30',program:'Treningsstudio for jobbkonsulenter',tiltak:'Oppfølging/AFT/VTA/IPS',kurs:'Jobbutvikling',target:'Jobbkonsulenter',instructor:'Thomas Knutzen',cap:20,moodleUrl:'https://ailaring.no/course/view.php?id=4091'},
+  {id:9,date:'2026-05-07',time:'09:00 - 15:00',program:'Innføringsprogram',tiltak:'Oppfølging ASD',kurs:'Løsningsbeskrivelse',target:'Jobbkonsulenter',instructor:'Linda Skadal Kvåle',cap:20},
+  {id:10,date:'2026-05-12',time:'09:00 - 11:30',program:'Treningsstudio for jobbkonsulenter',tiltak:'Oppfølging/AFT/VTA/IPS',kurs:'Jobbstøtte',target:'Jobbkonsulenter',instructor:'Nina Rossen',cap:20},
+  {id:11,date:'2026-05-13',time:'09:00 - 15:00',program:'Innføringsprogram',tiltak:'Oppfølging ASD',kurs:'Målgruppeforståelse',target:'Jobbkonsulenter',instructor:'Thomas Knutzen',cap:20},
+  {id:12,date:'2026-05-19',time:'09:00 - 11:30',program:'Treningsstudio for metodeveiledere',tiltak:'Alle',kurs:'Metodeveilederrollen 2',target:'Metodeveiledere',instructor:'Thomas Knutzen',cap:20,moodleUrl:'https://ailaring.no/course/view.php?id=4085'},
+  {id:13,date:'2026-05-20',time:'09:00 - 11:30',program:'Treningsstudio for jobbkonsulenter',tiltak:'Avklaring',kurs:'Arbeidsutprøving/Jobbutvikling',target:'Jobbkonsulenter',instructor:'Martha Cemanes Nilsen',cap:20},
+  {id:14,date:'2026-05-21',time:'09:00 - 11:30',program:'Treningsstudio for jobbkonsulenter',tiltak:'AFT',kurs:'Arbeidsutprøving',target:'Jobbkonsulenter',instructor:'Linda Skadal Kvåle',cap:20},
+  {id:15,date:'2026-05-26',time:'09:00 - 11:30',program:'Treningsstudio for jobbkonsulenter',tiltak:'Alle',kurs:'Metode',target:'Jobbkonsulenter',instructor:'Thomas Knutzen',cap:20,moodleUrl:'https://ailaring.no/course/view.php?id=4090'},
+  {id:16,date:'2026-05-27',time:'09:00 - 11:30',program:'Treningsstudio for jobbkonsulenter',tiltak:'Alle',kurs:'Ad Opus Kartlegging og Planer',target:'Jobbkonsulenter',instructor:'Linda Skadal Kvåle',cap:20},
+  {id:17,date:'2026-05-28',time:'09:00 - 11:30',program:'Treningsstudio for jobbkonsulenter',tiltak:'Alle',kurs:'Veiledning',target:'Jobbkonsulenter',instructor:'Thomas Knutzen',cap:20,moodleUrl:'https://ailaring.no/course/view.php?id=4095'},
+  {id:18,date:'2026-06-03',time:'09:00 - 11:30',program:'Treningsstudio for jobbkonsulenter',tiltak:'Oppfølging/AFT/VTA/IPS',kurs:'Jobbutvikling',target:'Jobbkonsulenter',instructor:'Thomas Knutzen',cap:20,moodleUrl:'https://ailaring.no/course/view.php?id=4091'},
+  {id:19,date:'2026-06-04',time:'09:00 - 11:30',program:'Treningsstudio for jobbkonsulenter',tiltak:'Alle',kurs:'Ad Opus Web',target:'Jobbkonsulenter',instructor:'Nina Rossen & Martin Guttormsen',cap:20,moodleUrl:'https://ailaring.no/course/view.php?id=4096'},
+  {id:20,date:'2026-06-09',time:'09:00 - 11:30',program:'Treningsstudio for metodeveiledere',tiltak:'Alle',kurs:'Metodeveilederrollen 3',target:'Metodeveiledere',instructor:'Nathan Bunting',cap:20,moodleUrl:'https://ailaring.no/course/view.php?id=4086'},
+  {id:21,date:'2026-06-10',time:'09:00 - 11:30',program:'Treningsstudio for jobbkonsulenter',tiltak:'Oppfølging/AFT/VTA/IPS',kurs:'Praktisk Kartlegging',target:'Jobbkonsulenter',instructor:'Martha Cemanes Nilsen',cap:20},
+  {id:22,date:'2026-06-11',time:'09:00 - 11:30',program:'Treningsstudio for jobbkonsulenter',tiltak:'AFT',kurs:'Arbeidsutprøving',target:'Jobbkonsulenter',instructor:'Linda Skadal Kvåle',cap:20},
+  {id:23,date:'2026-06-16',time:'09:00 - 11:30',program:'Treningsstudio for jobbkonsulenter',tiltak:'Avklaring',kurs:'Praktisk Kartlegging',target:'Jobbkonsulenter',instructor:'Martha Cemanes Nilsen',cap:20},
+  {id:24,date:'2026-06-17',time:'09:00 - 11:30',program:'Treningsstudio for jobbkonsulenter',tiltak:'Avklaring',kurs:'Arbeidsutprøving/Jobbutvikling',target:'Jobbkonsulenter',instructor:'Martha Cemanes Nilsen',cap:20},
+  {id:25,date:'2026-06-18',time:'09:00 - 11:30',program:'Treningsstudio for jobbkonsulenter',tiltak:'Oppfølging/AFT/VTA/IPS',kurs:'Jobbstøtte',target:'Jobbkonsulenter',instructor:'Nina Rossen',cap:20},
+  {id:26,date:'2026-06-25',time:'09:00 - 11:30',program:'Treningsstudio for metodeveiledere',tiltak:'Alle',kurs:'Metodeveilederrollen 4',target:'Metodeveiledere',instructor:'Nathan Bunting',cap:20,moodleUrl:'https://ailaring.no/course/view.php?id=4087'},
+  {id:27,date:'2026-08-18',time:'09:00 - 11:30',program:'Treningsstudio for jobbkonsulenter',tiltak:'AFT',kurs:'Arbeidsutprøving',target:'Jobbkonsulenter',instructor:'Linda Skadal Kvåle',cap:20},
+  {id:28,date:'2026-08-19',time:'09:00 - 11:30',program:'Treningsstudio for jobbkonsulenter',tiltak:'Avklaring',kurs:'Arbeidsutprøving/Jobbutvikling',target:'Jobbkonsulenter',instructor:'Martha Cemanes Nilsen',cap:20},
+  {id:29,date:'2026-08-21',time:'09:00 - 11:30',program:'Treningsstudio for jobbkonsulenter',tiltak:'Oppfølging/AFT/VTA/IPS',kurs:'Jobbstøtte',target:'Jobbkonsulenter',instructor:'Nina Rossen',cap:20},
+  {id:30,date:'2026-08-25',time:'09:00 - 11:30',program:'Treningsstudio for jobbkonsulenter',tiltak:'Alle',kurs:'Metode',target:'Jobbkonsulenter',instructor:'Thomas Knutzen',cap:20,moodleUrl:'https://ailaring.no/course/view.php?id=4090'},
+  {id:31,date:'2026-08-26',time:'09:00 - 11:30',program:'Treningsstudio for jobbkonsulenter',tiltak:'Alle',kurs:'Ad Opus Kartlegging og Planer',target:'Jobbkonsulenter',instructor:'Linda Skadal Kvåle',cap:20},
+  {id:32,date:'2026-08-27',time:'09:00 - 11:30',program:'Treningsstudio for jobbkonsulenter',tiltak:'Alle',kurs:'Veiledning',target:'Jobbkonsulenter',instructor:'Thomas Knutzen',cap:20,moodleUrl:'https://ailaring.no/course/view.php?id=4095'},
+  {id:33,date:'2026-09-08',time:'09:00 - 11:30',program:'Treningsstudio for jobbkonsulenter',tiltak:'Alle',kurs:'Ad Opus Web',target:'Jobbkonsulenter',instructor:'Nina Rossen & Martin Guttormsen',cap:20,moodleUrl:'https://ailaring.no/course/view.php?id=4096'},
+  {id:34,date:'2026-09-09',time:'09:00 - 11:30',program:'Treningsstudio for jobbkonsulenter',tiltak:'Oppfølging/AFT/VTA/IPS',kurs:'Praktisk Kartlegging',target:'Jobbkonsulenter',instructor:'Martha Cemanes Nilsen',cap:20},
+  {id:35,date:'2026-09-15',time:'09:00 - 11:30',program:'Treningsstudio for jobbkonsulenter',tiltak:'Avklaring',kurs:'Praktisk Kartlegging',target:'Jobbkonsulenter',instructor:'Martha Cemanes Nilsen',cap:20},
+  {id:36,date:'2026-09-16',time:'09:00 - 11:30',program:'Treningsstudio for jobbkonsulenter',tiltak:'Oppfølging/AFT/VTA/IPS',kurs:'Jobbutvikling',target:'Jobbkonsulenter',instructor:'Thomas Knutzen',cap:20,moodleUrl:'https://ailaring.no/course/view.php?id=4091'},
+  {id:37,date:'2026-09-17',time:'09:00 - 11:30',program:'Treningsstudio for metodeveiledere',tiltak:'Alle',kurs:'Metodeveilederrollen 1',target:'Metodeveiledere',instructor:'Nathan Bunting',cap:20,moodleUrl:'https://ailaring.no/course/view.php?id=4084'},
+  {id:38,date:'2026-10-20',time:'09:00 - 11:30',program:'Treningsstudio for jobbkonsulenter',tiltak:'AFT',kurs:'Arbeidsutprøving',target:'Jobbkonsulenter',instructor:'Linda Skadal Kvåle',cap:20},
+  {id:39,date:'2026-10-21',time:'09:00 - 11:30',program:'Treningsstudio for jobbkonsulenter',tiltak:'Avklaring',kurs:'Arbeidsutprøving/Jobbutvikling',target:'Jobbkonsulenter',instructor:'Martha Cemanes Nilsen',cap:20},
+  {id:40,date:'2026-10-22',time:'09:00 - 11:30',program:'Treningsstudio for metodeveiledere',tiltak:'Alle',kurs:'Metodeveilederrollen 2',target:'Metodeveiledere',instructor:'Nathan Bunting',cap:20,moodleUrl:'https://ailaring.no/course/view.php?id=4085'},
+  {id:41,date:'2026-10-23',time:'09:00 - 11:30',program:'Treningsstudio for jobbkonsulenter',tiltak:'Oppfølging/AFT/VTA/IPS',kurs:'Jobbstøtte',target:'Jobbkonsulenter',instructor:'Nina Rossen',cap:20},
+  {id:42,date:'2026-10-27',time:'09:00 - 11:30',program:'Treningsstudio for jobbkonsulenter',tiltak:'Alle',kurs:'Metode',target:'Jobbkonsulenter',instructor:'Thomas Knutzen',cap:20,moodleUrl:'https://ailaring.no/course/view.php?id=4090'},
+  {id:43,date:'2026-10-28',time:'09:00 - 11:30',program:'Treningsstudio for jobbkonsulenter',tiltak:'Alle',kurs:'Ad Opus Kartlegging og Planer',target:'Jobbkonsulenter',instructor:'Linda Skadal Kvåle',cap:20},
+  {id:44,date:'2026-10-29',time:'09:00 - 11:30',program:'Treningsstudio for jobbkonsulenter',tiltak:'Alle',kurs:'Veiledning',target:'Jobbkonsulenter',instructor:'Thomas Knutzen',cap:20,moodleUrl:'https://ailaring.no/course/view.php?id=4095'},
+  {id:45,date:'2026-11-10',time:'09:00 - 11:30',program:'Treningsstudio for jobbkonsulenter',tiltak:'Alle',kurs:'Ad Opus Web',target:'Jobbkonsulenter',instructor:'Nina Rossen & Martin Guttormsen',cap:20,moodleUrl:'https://ailaring.no/course/view.php?id=4096'},
+  {id:46,date:'2026-11-11',time:'09:00 - 11:30',program:'Treningsstudio for jobbkonsulenter',tiltak:'Oppfølging/AFT/VTA/IPS',kurs:'Praktisk Kartlegging',target:'Jobbkonsulenter',instructor:'Martha Cemanes Nilsen',cap:20},
+  {id:47,date:'2026-11-17',time:'09:00 - 11:30',program:'Treningsstudio for jobbkonsulenter',tiltak:'Avklaring',kurs:'Praktisk Kartlegging',target:'Jobbkonsulenter',instructor:'Martha Cemanes Nilsen',cap:20},
+  {id:48,date:'2026-11-18',time:'09:00 - 11:30',program:'Treningsstudio for jobbkonsulenter',tiltak:'Oppfølging/AFT/VTA/IPS',kurs:'Jobbutvikling',target:'Jobbkonsulenter',instructor:'Thomas Knutzen',cap:20,moodleUrl:'https://ailaring.no/course/view.php?id=4091'},
+  {id:49,date:'2026-11-19',time:'09:00 - 11:30',program:'Treningsstudio for metodeveiledere',tiltak:'Alle',kurs:'Metodeveilederrollen 3',target:'Metodeveiledere',instructor:'Nathan Bunting',cap:20,moodleUrl:'https://ailaring.no/course/view.php?id=4086'},
+  {id:50,date:'2026-12-04',time:'09:00 - 11:30',program:'Treningsstudio for jobbkonsulenter',tiltak:'Oppfølging/AFT/VTA/IPS',kurs:'Jobbstøtte',target:'Jobbkonsulenter',instructor:'Nina Rossen',cap:20},
+  {id:51,date:'2026-12-08',time:'09:00 - 11:30',program:'Treningsstudio for jobbkonsulenter',tiltak:'AFT',kurs:'Arbeidsutprøving',target:'Jobbkonsulenter',instructor:'Linda Skadal Kvåle',cap:20},
+  {id:52,date:'2026-12-09',time:'09:00 - 11:30',program:'Treningsstudio for jobbkonsulenter',tiltak:'Avklaring',kurs:'Arbeidsutprøving/Jobbutvikling',target:'Jobbkonsulenter',instructor:'Martha Cemanes Nilsen',cap:20},
+  {id:53,date:'2026-12-11',time:'09:00 - 11:30',program:'Treningsstudio for jobbkonsulenter',tiltak:'Alle',kurs:'Veiledning',target:'Jobbkonsulenter',instructor:'Thomas Knutzen',cap:20,moodleUrl:'https://ailaring.no/course/view.php?id=4095'},
+  {id:54,date:'2026-12-15',time:'09:00 - 11:30',program:'Treningsstudio for jobbkonsulenter',tiltak:'Alle',kurs:'Metode',target:'Jobbkonsulenter',instructor:'Thomas Knutzen',cap:20,moodleUrl:'https://ailaring.no/course/view.php?id=4090'},
+  {id:55,date:'2026-12-16',time:'09:00 - 11:30',program:'Treningsstudio for jobbkonsulenter',tiltak:'Alle',kurs:'Ad Opus Kartlegging og Planer',target:'Jobbkonsulenter',instructor:'Linda Skadal Kvåle',cap:20},
+  {id:56,date:'2026-12-17',time:'09:00 - 11:30',program:'Treningsstudio for metodeveiledere',tiltak:'Alle',kurs:'Metodeveilederrollen 4',target:'Metodeveiledere',instructor:'Nathan Bunting',cap:20,moodleUrl:'https://ailaring.no/course/view.php?id=4087'},
+  {id:101,date:'',time:'',program:'Treningsstudio for jobbkonsulenter',tiltak:'Oppfølging',kurs:'Rapportskriving',target:'Jobbkonsulenter',instructor:'',cap:999,type:'elearning'},
+  {id:102,date:'',time:'',program:'Treningsstudio for jobbkonsulenter',tiltak:'Avklaring',kurs:'Rapportskriving',target:'Jobbkonsulenter',instructor:'',cap:999,type:'elearning'},
+  {id:103,date:'',time:'',program:'Treningsstudio for jobbkonsulenter',tiltak:'Alle',kurs:'Personvern',target:'Jobbkonsulenter',instructor:'',cap:999,type:'elearning',moodleUrl:'https://ailaring.no/course/view.php?id=4089'},
+  {id:104,date:'',time:'',program:'Treningsstudio for jobbkonsulenter',tiltak:'Alle',kurs:'Karriereveiledning',target:'Jobbkonsulenter',instructor:'',cap:999,type:'elearning',moodleUrl:'https://ailaring.no/course/view.php?id=4088'},
+  {id:105,date:'',time:'',program:'Treningsstudio for jobbkonsulenter',tiltak:'AFT',kurs:'Opplæring',target:'Jobbkonsulenter',instructor:'',cap:999,type:'elearning'},
+  {id:106,date:'',time:'',program:'Treningsstudio for jobbkonsulenter',tiltak:'Avklaring',kurs:'Arbeidsmarked',target:'Jobbkonsulenter',instructor:'',cap:999,type:'elearning'},
+  {id:107,date:'',time:'',program:'Treningsstudio for jobbkonsulenter',tiltak:'Oppfølging',kurs:'Arbeidsmarked',target:'Jobbkonsulenter',instructor:'',cap:999,type:'elearning'}
+];
+
+// ============================================================
+// STATE
+// ============================================================
+const SK='fretex_opp_2026_v8h';
+const ADMIN_PW='fretex2026';
+
+function load(){
+  try{
+    const d=JSON.parse(localStorage.getItem(SK));
+    if(d&&d.courses){d.courses=migrateCourses(d.courses);if(!d.tiltakList)d.tiltakList=[...defaultTiltak];if(!d.instrList)d.instrList=[...defaultInstructors];if(!d.programColors)d.programColors={...defaultPrograms};return d;}
+  }catch{}
+  return{courses:migrateCourses(JSON.parse(JSON.stringify(rawDefaults))),registrations:[],nextId:57,tiltakList:[...defaultTiltak],instrList:[...defaultInstructors],programColors:{...defaultPrograms}};
+}
+function save(){localStorage.setItem(SK,JSON.stringify(S));}
+
+let S=load();
+let isAdmin=false,curTab='courses',selCourseId=null,editCourseId=null;
+let cTiltakSel=[],cInstrSel=[];
+
+function getRegs(id){return S.registrations.filter(r=>r.cid===id);}
+function progColor(prog){return S.programColors[prog]||'#666';}
+function progColorLight(prog){const c=progColor(prog);return c+'18';}
+function getPrograms(){return Object.keys(S.programColors);}
+
+// ============================================================
+// CHIP MULTI-SELECT
+// ============================================================
+function renderChipSelect(cid,opts,sel,canAdd){
+  const el=document.getElementById(cid);if(!el)return;
+  const open=el.dataset.open==='1';
+  let h='<div class="chip-dd"><div class="chip-area" onclick="toggleCM(\''+cid+'\')">';
+  if(!sel.length)h+='<span style="color:var(--text-muted);font-size:13px;">Klikk for å velge…</span>';
+  sel.forEach(s=>{h+=`<span class="chip">${s}<span class="chip-x" onclick="event.stopPropagation();rmChip('${cid}','${esc(s)}')">×</span></span>`;});
+  h+='</div><div class="chip-menu '+(open?'open':'')+'">';
+  opts.forEach(o=>{const isSel=sel.includes(o);h+=`<div class="chip-opt ${isSel?'selected':''}" onclick="togChipOpt('${cid}','${esc(o)}')">${isSel?'✓ ':''}${o}</div>`;});
+  if(canAdd)h+=`<div class="chip-add-row"><input class="chip-add-input" placeholder="Legg til ny…" id="${cid}_add" onkeydown="if(event.key==='Enter'){event.preventDefault();addCNew('${cid}');}"><button class="chip-add-btn" onclick="addCNew('${cid}')">＋</button></div>`;
+  h+='</div></div>';el.innerHTML=h;
+}
+function toggleCM(id){const el=document.getElementById(id);el.dataset.open=el.dataset.open==='1'?'0':'1';refrC(id);}
+function togChipOpt(id,v){const a=id==='cTiltakChips'?cTiltakSel:cInstrSel;const i=a.indexOf(v);if(i>=0)a.splice(i,1);else a.push(v);refrC(id);}
+function rmChip(id,v){const a=id==='cTiltakChips'?cTiltakSel:cInstrSel;const i=a.indexOf(v);if(i>=0)a.splice(i,1);refrC(id);}
+function addCNew(id){const inp=document.getElementById(id+'_add');if(!inp)return;const v=inp.value.trim();if(!v)return;
+  if(id==='cTiltakChips'){if(!S.tiltakList.includes(v)){S.tiltakList.push(v);save();}if(!cTiltakSel.includes(v))cTiltakSel.push(v);}
+  else{if(!S.instrList.includes(v)){S.instrList.push(v);save();}if(!cInstrSel.includes(v))cInstrSel.push(v);}
+  refrC(id);toast('Lagt til: '+v);}
+function refrC(id){if(id==='cTiltakChips')renderChipSelect('cTiltakChips',S.tiltakList,cTiltakSel,true);else renderChipSelect('cInstrChips',S.instrList,cInstrSel,true);}
+document.addEventListener('click',e=>{if(!e.target.closest('.chip-dd')){document.querySelectorAll('[id$="Chips"]').forEach(el=>{el.dataset.open='0';});refrC('cTiltakChips');refrC('cInstrChips');}});
+
+// ============================================================
+// TABS
+// ============================================================
+function switchTab(t){
+  curTab=t;
+  document.querySelectorAll('.nav-tab').forEach((b,i)=>b.classList.toggle('active',['courses','admin'][i]===t));
+  ['courses','admin'].forEach(x=>{const el=document.getElementById('tab-'+x);if(el)el.classList.toggle('hidden',x!==t);});
+  if(t==='courses')renderCourses();if(t==='admin')renderAdmin();
+}
+function toggleAdmin(){
+  if(!isAdmin){const pw=prompt('Admin-passord:');if(pw!==ADMIN_PW){toast('Feil passord',true);return;}}
+  isAdmin=!isAdmin;
+  document.getElementById('adminBtn').classList.toggle('active',isAdmin);
+  document.getElementById('adminTab').classList.toggle('hidden',!isAdmin);
+  if(!isAdmin&&curTab==='admin')switchTab('courses');
+  renderCourses();
+}
+
+// ============================================================
+// RENDER COURSES — Filters ALWAYS visible
+// ============================================================
+function buildFilters(){
+  let tOpts='<option value="">Alle tiltak</option>'+S.tiltakList.map(t=>`<option value="${t}">${t}</option>`).join('');
+  let pOpts='<option value="">Alle programmer</option>'+getPrograms().map(p=>`<option value="${p}">${p}</option>`).join('');
+  return`
+    <div class="fg"><span class="fg-label">Program</span><select class="fi" id="fProg" onchange="renderCourses()">${pOpts}</select></div>
+    <div class="fg"><span class="fg-label">Tiltak</span><select class="fi" id="fTilt" onchange="renderCourses()">${tOpts}</select></div>
+    <div class="fg"><span class="fg-label">Type</span><select class="fi" id="fType" onchange="renderCourses()"><option value="all">Alle typer</option><option value="samling">E-læring + samling</option><option value="elearning">Kun e-læring</option></select></div>
+    <div class="fg"><span class="fg-label">Vis</span><select class="fi" id="fTime" onchange="renderCourses()"><option value="upcoming">Kun kommende</option><option value="all">Alle kurs</option><option value="past">Kun tidligere</option></select></div>
+    <div class="fg fg-search"><span class="fg-label">Søk</span><input class="fi" id="fSearch" type="text" placeholder="Søk etter kurs…" oninput="renderCourses()" style="width:100%;"></div>`;
+}
+
+// Preserve filter values across re-renders
+let _fp='',_ft='',_fs='',_fv='upcoming',_fty='all';
+function saveFilterState(){
+  const a=document.getElementById('fProg'),b=document.getElementById('fTilt'),c=document.getElementById('fSearch'),d=document.getElementById('fTime');
+  const e=document.getElementById('fType');if(a)_fp=a.value;if(b)_ft=b.value;if(c)_fs=c.value;if(d)_fv=d.value;if(e)_fty=e.value;
+}
+function restoreFilterState(){
+  const a=document.getElementById('fProg'),b=document.getElementById('fTilt'),c=document.getElementById('fSearch'),d=document.getElementById('fTime');
+  const e=document.getElementById('fType');if(a)a.value=_fp;if(b)b.value=_ft;if(c)c.value=_fs;if(d)d.value=_fv;if(e)e.value=_fty;
+}
+
+function renderCourses(){
+  saveFilterState();
+  document.getElementById('filtersBar').innerHTML=buildFilters();
+  restoreFilterState();
+
+  // Stats — admin only
+  const sb=document.getElementById('statsBar');
+  if(isAdmin){
+    sb.classList.remove('hidden');
+    const up=S.courses.filter(c=>!isPast(c.date)).length,withUrl=S.courses.filter(c=>c.moodleUrl).length;
+    sb.innerHTML=`<div class="stat"><div class="stat-ic" style="background:var(--fretex-red-pale);color:var(--fretex-red);">📅</div><div><div class="stat-v">${up}</div><div class="stat-l">Kommende kurs</div></div></div>
+      <div class="stat"><div class="stat-ic" style="background:#E8F1FB;color:#1565C0;">🔗</div><div><div class="stat-v">${withUrl}</div><div class="stat-l">Med Moodle-lenke</div></div></div>
+      <div class="stat"><div class="stat-ic" style="background:#FFF0EB;color:#D84315;">📋</div><div><div class="stat-v">${S.courses.length}</div><div class="stat-l">Totalt kurs</div></div></div>`;
+  } else { sb.classList.add('hidden'); }
+
+  const fpV=_fp,ftV=_ft,fsV=_fs.toLowerCase(),fvV=_fv;
+  let list=S.courses.slice().sort((a,b)=>{if(a.type==='elearning'&&b.type!=='elearning')return 1;if(a.type!=='elearning'&&b.type==='elearning')return -1;if(a.type==='elearning'&&b.type==='elearning')return a.kurs.localeCompare(b.kurs);return(a.date||'').localeCompare(b.date||'');});
+  list=list.filter(c=>{
+    if(fpV&&c.program!==fpV)return false;
+    if(ftV){const tA=Array.isArray(c.tiltak)?c.tiltak:[];if(!tA.includes(ftV))return false;}
+    if(fsV&&!c.kurs.toLowerCase().includes(fsV)&&!(c.instructor||[]).join(' ').toLowerCase().includes(fsV))return false;
+    const ftyV=_fty;
+    if(ftyV==='samling'&&c.type==='elearning')return false;
+    if(ftyV==='elearning'&&c.type!=='elearning')return false;
+    if(c.type!=='elearning'){if(fvV==='upcoming'&&isPast(c.date))return false;
+    if(fvV==='past'&&!isPast(c.date))return false;}
+    return true;
+  });
+
+  const g=document.getElementById('coursesGrid');
+  if(!list.length){g.innerHTML='<div style="text-align:center;padding:50px;color:var(--text-muted);">Ingen kurs matcher filteret.</div>';return;}
+
+  g.innerHTML=list.map(c=>{
+    const dt=fmtD(c.date),regs=getRegs(c.id),cap=c.cap||20,
+          pct=Math.min(regs.length/cap*100,100),past=isPast(c.date),
+          fill=pct>=100?'f':pct>=75?'w':'',wk=getWeek(c.date),
+          col=progColor(c.program);
+    const tA=Array.isArray(c.tiltak)?c.tiltak:[],iA=Array.isArray(c.instructor)?c.instructor:[];
+    return`<div class="card ${past?'past':''}"><div class="card-inner">
+      <div class="card-date" style="background:${col}">${c.type==='elearning'?'<span class="cd-day">💻</span><span class="cd-mon">E-lær.</span><span class="cd-wk">Alltid</span>':`<span class="cd-day">${dt.day}</span><span class="cd-mon">${dt.mon}</span><span class="cd-wk">uke ${wk}</span>`}</div>
+      <div class="card-info">
+        <span class="ci-tag" style="color:${col}">${c.program}</span>
+        <div class="ci-name-row">
+          <div class="ci-name">${c.kurs}</div>
+          <div class="ci-meta">${c.type==='elearning'?'<span>💻 E-læring</span>':'<span>💻 E-læring + <img src="data:image/png;base64,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" style="height:1.2em;width:1.2em;vertical-align:middle;margin:0 2px;"> Samling</span><span>🕐 '+c.time+'</span>'}<span>📋 ${tA.join(', ')}</span></div>
+        </div>${c.description?`<div style="font-size:13px;color:var(--text-sec);margin-top:4px;line-height:1.4;">${c.description}</div>`:""}
+      </div>
+      <div class="card-act">
+        ${c.moodleUrl?`<a href="${c.moodleUrl}" target="_blank" class="btn btn-p btn-s" style="text-decoration:none;">Åpne i aiLæring</a>`
+          :'<span style="font-size:11px;color:var(--text-muted)">Ingen lenke ennå</span>'}
+        ${isAdmin?`<button class="btn-muted" onclick="openEditCourse(${c.id})">✏️ Rediger</button>`:''}
+      </div>
+    </div></div>`;
+  }).join('');
+}
+
+// ============================================================
+// E-LEARNING
+// ============================================================
+// E-learning courses merged into main list - no separate section needed
+
+// ============================================================
+// REGISTRATION
+// ============================================================
+function openReg(id){selCourseId=id;const c=S.courses.find(x=>x.id===id);const dt=fmtD(c.date);const iA=Array.isArray(c.instructor)?c.instructor:[];
+  document.getElementById('regTitle').textContent='Påmelding: '+c.kurs;
+  document.getElementById('regInfo').textContent=`${dt.day}. ${dt.mon} 2026 | ${c.time} | ${iA.join(', ')}`;
+  ['rFN','rLN','rEM','rLD'].forEach(x=>document.getElementById(x).value='');
+  document.querySelectorAll('#regModal .f-err').forEach(e=>e.style.display='none');
+  document.getElementById('regModal').classList.add('vis');}
+function submitReg(){
+  const fn=document.getElementById('rFN').value.trim(),ln=document.getElementById('rLN').value.trim(),em=document.getElementById('rEM').value.trim(),ld=document.getElementById('rLD').value.trim();
+  let ok=true;
+  if(!fn){document.getElementById('eFN').style.display='block';ok=false;}else document.getElementById('eFN').style.display='none';
+  if(!ln){document.getElementById('eLN').style.display='block';ok=false;}else document.getElementById('eLN').style.display='none';
+  if(!em||!em.includes('@')){document.getElementById('eEM').style.display='block';ok=false;}else document.getElementById('eEM').style.display='none';
+  if(!ok)return;
+  if(S.registrations.find(r=>r.cid===selCourseId&&r.em.toLowerCase()===em.toLowerCase())){toast('Allerede påmeldt!',true);return;}
+  const c=S.courses.find(x=>x.id===selCourseId);if(getRegs(selCourseId).length>=(c.cap||20)){toast('Fullt!',true);return;}
+  S.registrations.push({cid:selCourseId,fn,ln,em,ld,ts:new Date().toISOString()});
+  save();closeM('regModal');toast('Påmelding registrert! ✅');renderCourses();}
+function viewRegs(id){
+  const c=S.courses.find(x=>x.id===id),regs=getRegs(id);
+  document.getElementById('viewTitle').textContent='Påmeldte: '+c.kurs;
+  document.getElementById('viewBody').innerHTML=regs.length?`<table class="tbl"><thead><tr><th>#</th><th>Navn</th><th>E-post</th><th>Påmeldt av</th>${isAdmin?'<th></th>':''}</tr></thead><tbody>${regs.map((r,i)=>`<tr><td>${i+1}</td><td>${r.fn} ${r.ln}</td><td>${r.em}</td><td>${r.ld||'—'}</td>${isAdmin?`<td><button class="btn btn-d btn-s" onclick="removeReg(${id},'${esc(r.em)}')">Fjern</button></td>`:''}</tr>`).join('')}</tbody></table>`:'<p style="color:var(--text-muted)">Ingen påmeldte.</p>';
+  document.getElementById('viewExBtn').onclick=()=>exportCourse(id);
+  document.getElementById('viewModal').classList.add('vis');}
+function removeReg(id,em){if(!confirm('Fjerne?'))return;S.registrations=S.registrations.filter(r=>!(r.cid===id&&r.em===em));save();closeM('viewModal');renderCourses();if(curTab==='admin')renderAdmin();toast('Fjernet.');}
+
+// ============================================================
+// ADMIN
+// ============================================================
+function renderAdmin(){
+  if(!isAdmin)return;
+  const sorted=S.courses.slice().sort((a,b)=>a.date.localeCompare(b.date)).filter(c=>!isPast(c.date));
+  document.querySelector('#adminTbl tbody').innerHTML=sorted.map(c=>{
+    const regs=getRegs(c.id),pct=regs.length/(c.cap||20),bc=pct>=1?'badge-r':pct>=.75?'badge-o':'badge-g';
+    const tA=Array.isArray(c.tiltak)?c.tiltak:[],iA=Array.isArray(c.instructor)?c.instructor:[];
+    return`<tr><td>${c.date.slice(5)}</td><td><strong>${c.kurs}</strong></td>
+      <td><div class="tiltak-tags">${tA.map(t=>`<span class="tiltak-tag">${t}</span>`).join('')}</div></td>
+      <td style="font-size:12px">${iA.join(', ')||'—'}</td>
+      <td>${c.moodleUrl?'<span style="color:var(--success)">✅</span>':'<span style="color:var(--text-muted)">—</span>'}</td>
+      <td><input class="cap-input" type="number" min="1" max="100" value="${c.cap||20}" onchange="updCap(${c.id},this.value)"></td>
+      <td style="white-space:nowrap"><button class="btn btn-o btn-s" onclick="openEditCourse(${c.id})">✏️</button></td></tr>`;
+  }).join('');
+
+  
+
+  // Manage tiltak
+  document.getElementById('manageTiltak').innerHTML=`
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;">${S.tiltakList.map(t=>`<span class="chip">${t}<span class="chip-x" onclick="rmTiltak('${esc(t)}')">×</span></span>`).join('')}</div>
+    <div style="display:flex;gap:6px;"><input id="newTI" class="chip-add-input" placeholder="Nytt tiltak…" style="padding:7px 10px;border-radius:var(--r-sm);" onkeydown="if(event.key==='Enter')addTI();"><button class="btn btn-p btn-s" onclick="addTI()">＋</button></div>`;
+
+  document.getElementById('manageInstr').innerHTML=`
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;">${S.instrList.map(t=>`<span class="chip">${t}<span class="chip-x" onclick="rmInstr('${esc(t)}')">×</span></span>`).join('')}</div>
+    <div style="display:flex;gap:6px;"><input id="newII" class="chip-add-input" placeholder="Ny leverandør…" style="padding:7px 10px;border-radius:var(--r-sm);" onkeydown="if(event.key==='Enter')addII();"><button class="btn btn-p btn-s" onclick="addII()">＋</button></div>`;
+
+  // Program colors
+  document.getElementById('manageColors').innerHTML=getPrograms().map(p=>`
+    <div class="prog-color-row">
+      <span class="color-swatch" style="background:${progColor(p)}" onclick="this.nextElementSibling.click()"></span>
+      <input type="color" class="color-swatch-input" value="${progColor(p)}" onchange="setProgColor('${esc(p)}',this.value)">
+      <span style="font-size:14px;font-weight:500;">${p}</span>
+    </div>`).join('');
+}
+
+function updCap(id,v){const n=parseInt(v);if(n<1||n>100)return;const c=S.courses.find(x=>x.id===id);if(c)c.cap=n;save();toast(`Kapasitet: ${n}`);}
+function addTI(){const v=document.getElementById('newTI').value.trim();if(!v)return;if(S.tiltakList.includes(v)){toast('Finnes allerede',true);return;}S.tiltakList.push(v);save();renderAdmin();renderCourses();toast('Tiltak: '+v);}
+function rmTiltak(v){if(!confirm('Fjerne "'+v+'"?'))return;S.tiltakList=S.tiltakList.filter(t=>t!==v);save();renderAdmin();renderCourses();toast('Fjernet.');}
+function addII(){const v=document.getElementById('newII').value.trim();if(!v)return;if(S.instrList.includes(v)){toast('Finnes allerede',true);return;}S.instrList.push(v);save();renderAdmin();toast('Leverandør: '+v);}
+function rmInstr(v){if(!confirm('Fjerne "'+v+'"?'))return;S.instrList=S.instrList.filter(t=>t!==v);save();renderAdmin();toast('Fjernet.');}
+function setProgColor(p,c){S.programColors[p]=c;save();renderAdmin();renderCourses();toast('Farge oppdatert');}
+
+// ============================================================
+// ADD / EDIT COURSE
+// ============================================================
+function populateProgSelect(){
+  const sel=document.getElementById('cProg');
+  sel.innerHTML=getPrograms().map(p=>`<option value="${p}">${p}</option>`).join('');
+}
+function openAddCourse(){
+  editCourseId=null;document.getElementById('courseModalTitle').textContent='Nytt kurs';document.getElementById('cDelBtn').style.display='none';
+  document.getElementById('cDate').value='';document.getElementById('cTime').value='09:00 - 11:30';document.getElementById('cName').value='';
+  populateProgSelect();document.getElementById('cTarget').value='Jobbkonsulenter';document.getElementById('cCap').value='20';document.getElementById('cMoodle').value='';document.getElementById('cDesc').value='';
+  cTiltakSel=[];cInstrSel=[];renderChipSelect('cTiltakChips',S.tiltakList,cTiltakSel,true);renderChipSelect('cInstrChips',S.instrList,cInstrSel,true);
+  document.querySelectorAll('#courseModal .f-err').forEach(e=>e.style.display='none');document.getElementById('courseModal').classList.add('vis');}
+function openEditCourse(id){
+  editCourseId=id;const c=S.courses.find(x=>x.id===id);if(!c)return;
+  document.getElementById('courseModalTitle').textContent='Rediger kurs';document.getElementById('cDelBtn').style.display='';
+  document.getElementById('cDate').value=c.date;document.getElementById('cTime').value=c.time;document.getElementById('cName').value=c.kurs;
+  populateProgSelect();document.getElementById('cProg').value=c.program;document.getElementById('cTarget').value=c.target;document.getElementById('cCap').value=c.cap||20;
+  document.getElementById('cMoodle').value=c.moodleUrl||'';document.getElementById('cDesc').value=c.description||'';cTiltakSel=Array.isArray(c.tiltak)?[...c.tiltak]:[];cInstrSel=Array.isArray(c.instructor)?[...c.instructor]:[];
+  renderChipSelect('cTiltakChips',S.tiltakList,cTiltakSel,true);renderChipSelect('cInstrChips',S.instrList,cInstrSel,true);
+  document.querySelectorAll('#courseModal .f-err').forEach(e=>e.style.display='none');document.getElementById('courseModal').classList.add('vis');}
+function saveCourse(){
+  const date=document.getElementById('cDate').value,time=document.getElementById('cTime').value.trim(),kurs=document.getElementById('cName').value.trim(),
+        prog=document.getElementById('cProg').value,tgt=document.getElementById('cTarget').value,cap=parseInt(document.getElementById('cCap').value)||20;
+  let ok=true;
+  if(!date){document.getElementById('ecDate').style.display='block';ok=false;}else document.getElementById('ecDate').style.display='none';
+  if(!time){document.getElementById('ecTime').style.display='block';ok=false;}else document.getElementById('ecTime').style.display='none';
+  if(!kurs){document.getElementById('ecName').style.display='block';ok=false;}else document.getElementById('ecName').style.display='none';
+  if(!cTiltakSel.length){document.getElementById('ecTilt').style.display='block';ok=false;}else document.getElementById('ecTilt').style.display='none';
+  if(!ok)return;
+  const moodle=document.getElementById('cMoodle').value.trim();const desc=document.getElementById('cDesc').value.trim();if(editCourseId){const c=S.courses.find(x=>x.id===editCourseId);if(c){c.date=date;c.time=time;c.kurs=kurs;c.program=prog;c.tiltak=[...cTiltakSel];c.target=tgt;c.instructor=[...cInstrSel];c.cap=cap;c.moodleUrl=moodle;c.description=desc;}toast('Oppdatert! ✅');}
+  else{S.courses.push({id:S.nextId++,date,time,program:prog,tiltak:[...cTiltakSel],kurs,target:tgt,instructor:[...cInstrSel],cap,moodleUrl:moodle,description:desc});toast('Lagt til! ✅');}
+  save();closeM('courseModal');renderCourses();if(curTab==='admin')renderAdmin();}
+function deleteCourse(){if(!editCourseId)return;const c=S.courses.find(x=>x.id===editCourseId);if(!confirm('Slett "'+((c&&c.kurs)||'')+'"?'))return;
+  S.courses=S.courses.filter(x=>x.id!==editCourseId);S.registrations=S.registrations.filter(r=>r.cid!==editCourseId);save();closeM('courseModal');renderCourses();if(curTab==='admin')renderAdmin();toast('Slettet.');}
+
+// EXPORT
+function exportCourse(id){const c=S.courses.find(x=>x.id===id),regs=getRegs(id);let csv='Fornavn;Etternavn;E-post;Påmeldt av;Tidspunkt\n';regs.forEach(r=>csv+=`${r.fn};${r.ln};${r.em};${r.ld||''};${r.ts}\n`);dl(csv,`pamelding_${c.kurs.replace(/\s+/g,'_')}_${c.date}.csv`);}
+function exportAll(){let csv='Kurs;Dato;Tiltak;Fornavn;Etternavn;E-post;Påmeldt av;Tidspunkt\n';S.registrations.forEach(r=>{const c=S.courses.find(x=>x.id===r.cid);csv+=`${c?c.kurs:'?'};${c?c.date:'?'};${c?(c.tiltak||[]).join(', '):'?'};${r.fn};${r.ln};${r.em};${r.ld||''};${r.ts}\n`;});dl(csv,'alle_pameldinger_2026.csv');}
+function dl(c,fn){const b=new Blob(['\uFEFF'+c],{type:'text/csv;charset=utf-8;'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=fn;a.click();toast('Eksportert! 📥');}
+
+renderCourses();
+</script>
+</body>
+</html>
