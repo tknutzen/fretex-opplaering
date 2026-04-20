@@ -436,28 +436,29 @@ function buildFilters(){
   let tOpts='<option value="">Alle tiltak</option>'+S.tiltakList.map(t=>`<option value="${t}">${t}</option>`).join('');
   let pOpts='<option value="">Alle programmer</option>'+getPrograms().map(p=>`<option value="${p}">${p}</option>`).join('');
   return`
-    <div class="fg"><span class="fg-label">Program</span><select class="fi" id="fProg" onchange="renderCourses()">${pOpts}</select></div>
-    <div class="fg"><span class="fg-label">Tiltak</span><select class="fi" id="fTilt" onchange="renderCourses()">${tOpts}</select></div>
-    <div class="fg"><span class="fg-label">Type</span><select class="fi" id="fType" onchange="renderCourses()"><option value="all">Alle typer</option><option value="samling">E-læring + samling</option><option value="elearning">Kun e-læring</option></select></div>
-    <div class="fg"><span class="fg-label">Vis</span><select class="fi" id="fTime" onchange="renderCourses()"><option value="upcoming">Kun kommende</option><option value="all">Alle kurs</option><option value="past">Kun tidligere</option></select></div>
-    <div class="fg fg-search"><span class="fg-label">Søk</span><input class="fi" id="fSearch" type="text" placeholder="Søk etter kurs…" oninput="renderCourses()" style="width:100%;"></div>`;
+    <div class="fg"><span class="fg-label">Program</span><select class="fi" id="fProg" onchange="updateCourseList()">${pOpts}</select></div>
+    <div class="fg"><span class="fg-label">Tiltak</span><select class="fi" id="fTilt" onchange="updateCourseList()">${tOpts}</select></div>
+    <div class="fg"><span class="fg-label">Type</span><select class="fi" id="fType" onchange="updateCourseList()"><option value="all">Alle typer</option><option value="samling">E-læring + samling</option><option value="elearning">Kun e-læring</option></select></div>
+    <div class="fg"><span class="fg-label">Vis</span><select class="fi" id="fTime" onchange="updateCourseList()"><option value="upcoming">Kun kommende</option><option value="all">Alle kurs</option><option value="past">Kun tidligere</option></select></div>
+    <div class="fg fg-search"><span class="fg-label">Søk</span><input class="fi" id="fSearch" type="text" placeholder="Søk etter kurs…" oninput="updateCourseList()" style="width:100%;"></div>`;
 }
 
-// Preserve filter values across re-renders
-let _fp='',_ft='',_fs='',_fv='upcoming',_fty='all';
-function saveFilterState(){
-  const a=document.getElementById('fProg'),b=document.getElementById('fTilt'),c=document.getElementById('fSearch'),d=document.getElementById('fTime');
-  const e=document.getElementById('fType');if(a)_fp=a.value;if(b)_ft=b.value;if(c)_fs=c.value;if(d)_fv=d.value;if(e)_fty=e.value;
-}
-function restoreFilterState(){
-  const a=document.getElementById('fProg'),b=document.getElementById('fTilt'),c=document.getElementById('fSearch'),d=document.getElementById('fTime');
-  const e=document.getElementById('fType');if(a)a.value=_fp;if(b)b.value=_ft;if(c)c.value=_fs;if(d)d.value=_fv;if(e)e.value=_fty;
-}
-
+let _filtersBuilt=false;
+function rebuildFilters(){_filtersBuilt=false;renderCourses();}
 function renderCourses(){
-  saveFilterState();
-  document.getElementById('filtersBar').innerHTML=buildFilters();
-  restoreFilterState();
+  if(!_filtersBuilt){
+    document.getElementById('filtersBar').innerHTML=buildFilters();
+    _filtersBuilt=true;
+  }
+  updateCourseList();
+}
+
+function updateCourseList(){
+  const fpV=(document.getElementById('fProg')||{}).value||'';
+  const ftV=(document.getElementById('fTilt')||{}).value||'';
+  const fsV=((document.getElementById('fSearch')||{}).value||'').toLowerCase();
+  const fvV=(document.getElementById('fTime')||{}).value||'upcoming';
+  const ftyV=(document.getElementById('fType')||{}).value||'all';
 
   // Stats — admin only
   const sb=document.getElementById('statsBar');
@@ -469,13 +470,11 @@ function renderCourses(){
       <div class="stat"><div class="stat-ic" style="background:#FFF0EB;color:#D84315;">📋</div><div><div class="stat-v">${S.courses.length}</div><div class="stat-l">Totalt kurs</div></div></div>`;
   } else { sb.classList.add('hidden'); }
 
-  const fpV=_fp,ftV=_ft,fsV=_fs.toLowerCase(),fvV=_fv;
   let list=S.courses.slice().sort((a,b)=>{if(a.type==='elearning'&&b.type!=='elearning')return 1;if(a.type!=='elearning'&&b.type==='elearning')return -1;if(a.type==='elearning'&&b.type==='elearning')return a.kurs.localeCompare(b.kurs);return(a.date||'').localeCompare(b.date||'');});
   list=list.filter(c=>{
     if(fpV&&c.program!==fpV)return false;
     if(ftV){const tA=Array.isArray(c.tiltak)?c.tiltak:[];if(!tA.includes(ftV))return false;}
     if(fsV&&!c.kurs.toLowerCase().includes(fsV)&&!(c.instructor||[]).join(' ').toLowerCase().includes(fsV))return false;
-    const ftyV=_fty;
     if(ftyV==='samling'&&c.type==='elearning')return false;
     if(ftyV==='elearning'&&c.type!=='elearning')return false;
     if(c.type!=='elearning'){if(fvV==='upcoming'&&isPast(c.date))return false;
@@ -581,11 +580,11 @@ function renderAdmin(){
 }
 
 function updCap(id,v){const n=parseInt(v);if(n<1||n>100)return;const c=S.courses.find(x=>x.id===id);if(c)c.cap=n;save();toast(`Kapasitet: ${n}`);}
-function addTI(){const v=document.getElementById('newTI').value.trim();if(!v)return;if(S.tiltakList.includes(v)){toast('Finnes allerede',true);return;}S.tiltakList.push(v);save();renderAdmin();renderCourses();toast('Tiltak: '+v);}
-function rmTiltak(v){if(!confirm('Fjerne "'+v+'"?'))return;S.tiltakList=S.tiltakList.filter(t=>t!==v);save();renderAdmin();renderCourses();toast('Fjernet.');}
+function addTI(){const v=document.getElementById('newTI').value.trim();if(!v)return;if(S.tiltakList.includes(v)){toast('Finnes allerede',true);return;}S.tiltakList.push(v);save();renderAdmin();rebuildFilters();toast('Tiltak: '+v);}
+function rmTiltak(v){if(!confirm('Fjerne "'+v+'"?'))return;S.tiltakList=S.tiltakList.filter(t=>t!==v);save();renderAdmin();rebuildFilters();toast('Fjernet.');}
 function addII(){const v=document.getElementById('newII').value.trim();if(!v)return;if(S.instrList.includes(v)){toast('Finnes allerede',true);return;}S.instrList.push(v);save();renderAdmin();toast('Leverandør: '+v);}
 function rmInstr(v){if(!confirm('Fjerne "'+v+'"?'))return;S.instrList=S.instrList.filter(t=>t!==v);save();renderAdmin();toast('Fjernet.');}
-function setProgColor(p,c){S.programColors[p]=c;save();renderAdmin();renderCourses();toast('Farge oppdatert');}
+function setProgColor(p,c){S.programColors[p]=c;save();renderAdmin();rebuildFilters();toast('Farge oppdatert');}
 
 // ============================================================
 // ADD / EDIT COURSE
